@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Action Metrics</title>
+
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  </head>
+  <body style="padding-top: 70px">
+    <!--Navbar-->
+    <nav
+      class="navbar fixed-top navbar-expand-lg navbar-dark"
+      style="background-color: black"
+    >
+      <a class="navbar-brand" href="#">Action Metrics</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav mr-auto">
+          <form action="/reports" method="post">
+            <input type="hidden" id="whichPage" name="whichPage" value="" />
+            <input
+              type="submit"
+              class="btn"
+              style="background-color: black; color: grey"
+              value="Reports"
+              onclick="setWhichPage('Reports');"
+            />
+            <input
+              type="button"
+              class="btn"
+              style="background-color: black; color: white"
+              value="Stats"
+              onclick="setWhichPage('Stats');"
+            />
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <% var parsedData = data; %>
+
+    <!--Calculate Days Was Open-->
+    <%var daysPassedList = []; for (var i in parsedData.records) { var
+    openedDate = parsedData.records[i][15]; var closedDate =
+    parsedData.records[i][16]; var openYear = openedDate.slice(6,10); var year =
+    closedDate.slice(6, 10); var openMonth = openedDate.slice(0,2); var month =
+    closedDate.slice(0, 2); var openMonthInt = parseInt(openMonth, 10);
+    openMonthInt = openMonthInt - 1; openMonth = openMonthInt.toString(10); var
+    monthInt = parseInt(month, 10); monthInt = monthInt - 1; month =
+    monthInt.toString(10); var openDay = openedDate.slice(3,5); var day =
+    closedDate.slice(3, 5); var formattedOpenDate = new Date(openYear,
+    openMonth, openDay); var formattedCloseDate = new Date(year, month, day);
+    timeDifference = formattedCloseDate.getTime() - formattedOpenDate.getTime();
+    var dayDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+    daysPassedList.push(dayDifference);}%>
+
+    <!--Convert to yyyymmdd-->
+    <% function getYMD(ogDate) { var y = ogDate.getFullYear(); var m =
+    ogDate.getMonth() + 1; var d = ogDate.getDate(); var mm = m < 10 ? "0" + m :
+    m; var dd = d < 10 ? "0" + d : d; return "" + y + "-" + mm + "-" + dd; } %>
+
+    <!--Get this year-->
+    <% function getThisYear(){ var t = new Date(); return t.getFullYear(); }%>
+
+    <h5 style="margin-left: 5px">Average Days to close WO:</h5>
+
+    <!--Print average to open to close fiscal year-->
+    <%var totalDaysPassed = 0; for (var i in daysPassedList){if
+    (daysPassedList[i]){totalDaysPassed += daysPassedList[i];}
+    console.log(totalDaysPassed);} var averageDaysPassedFiscal = totalDaysPassed
+    / daysPassedList.length;%>
+    <h6 style="margin-left: 25px">
+      Fiscal Year: <%=averageDaysPassedFiscal.toFixed(2)%>
+    </h6>
+
+    <script>
+      function setWhichPage(whichOne) {
+        document.getElementById("whichPage").value = whichOne;
+      }
+    </script>
+  </body>
+</html>
