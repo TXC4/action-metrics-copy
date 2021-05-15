@@ -34,7 +34,7 @@ app.post('/', (req, res) => {
 })
 
 app.post('/reports', (req, res) => {
-    if (req.body.whichButton == "Open") {
+    if (req.body.whichButton == "Opened") {
         (async () => {
             const fetchResponse = await fetch(urlOpen);
             const json = await fetchResponse.json();
