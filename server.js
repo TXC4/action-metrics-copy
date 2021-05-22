@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 urlOpen = "https://app.propertyware.com/pw/00a/2458353664/JSON?3PHJqRj";
 urlClosed = "https://app.propertyware.com/pw/00a/2458353665/JSON?8TKZQMr";
 urlUnassigned = "https://app.propertyware.com/pw/00a/2458353668/JSON?9EyeuDT";
+urlAll = "https://app.propertyware.com/pw/00a/2469658624/JSON?9ZjKRYo";
 
 // app.get('/', (req, res) => {
 //     //res.sendFile(__dirname + "/index.html");
@@ -88,7 +89,7 @@ app.post('/reports', (req, res) => {
 app.post('/stats', (req, res) => {
     if (req.body.whichPage == 'Stats') {
         (async () => {
-            const fetchResponse = await fetch(urlClosed);
+            const fetchResponse = await fetch(urlAll);
             const json = await fetchResponse.json();
             let jsonCopy = json;
             res.render('stats', { data: json });
