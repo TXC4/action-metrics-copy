@@ -86,15 +86,33 @@ app.post('/reports', (req, res) => {
     }
 })
 
+function getDefaultMaxDate() {
+    var now = new Date();
+    var y = now.getFullYear();
+    var m = now.getMonth() + 1;
+    var d = now.getDate();
+    var mm = m < 10 ? "0" + m : m;
+    var dd = d < 10 ? "0" + d : d;
+    return "" + y + "-" + mm + "-" + dd;
+}
+
 app.post('/stats', (req, res) => {
-    if (req.body.whichPage == 'Stats') {
-        (async () => {
-            const fetchResponse = await fetch(urlAll);
-            const json = await fetchResponse.json();
-            let jsonCopy = json;
-            res.render('stats', { data: json });
-        })();
-    }
+    (async () => {
+        const fetchResponse = await fetch(urlAll);
+        const json = await fetchResponse.json();
+        let jsonCopy = json;
+        if (req.body.minDate) {
+            jsonCopy = { ...jsonCopy, minDate: req.body.minDate };
+        } else {
+            jsonCopy = { ...jsonCopy, minDate: "2021-05-01" };
+        }
+        if (req.body.maxDate) {
+            jsonCopy = { ...jsonCopy, maxDate: req.body.maxDate };
+        } else {
+            jsonCopy = { ...jsonCopy, maxDate: getDefaultMaxDate() }
+        }
+        res.render('stats', { data: jsonCopy });
+    })();
 })
 
 app.listen(process.env.PORT || 3000, () => {
