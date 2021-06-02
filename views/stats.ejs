@@ -72,11 +72,19 @@
         </div>
         <div class="navbar-nav ml-auto">
           <form action="/stats" method="post">
+            <span style="color: white">Count Start: </span>
             <input
+              style="margin-right: 30px"
               type="date"
               id="minDate"
               name="minDate"
               value="<%=parsedData.minDate%>"
+            />
+            <input
+              type="date"
+              id="minShowDate"
+              name="minShowDate"
+              value="<%=parsedData.minShowDate%>"
             />
             <input
               type="date"
@@ -99,6 +107,16 @@
     dayBefore.setDate(dayBefore.getDate() - 1);
     dateList.push(dayBefore.toLocaleDateString('en-US', {timeZone: 'UTC'})); }
     %>
+
+    <!--get dates to show-->
+    <%var formattedMinDate = new Date(parsedData.minShowDate); var
+    formattedMaxDate = new Date(parsedData.maxDate); var diff =
+    (formattedMaxDate - formattedMinDate)/1000/60/60/24; var dateListShow = [];
+    dateListShow.push( formattedMaxDate.toLocaleDateString('en-US', {timeZone:
+    'UTC'} )); var dayBefore = new Date(formattedMaxDate); for (var i = diff; i
+    > 0; i--) { dayBefore.setDate(dayBefore.getDate() - 1);
+    dateListShow.push(dayBefore.toLocaleDateString('en-US', {timeZone: 'UTC'}));
+    } %>
 
     <!--Report date to ymd-->
     <% function convertReportDateToYMD(inDate){ var tempDateStr =
@@ -150,17 +168,17 @@
       </thead>
 
       <tbody>
-        <%for (var i in dateList){ %>
+        <%for (var i in dateListShow){ %>
         <tr>
-          <td><%=dateList[i]%></td>
-          <td><%=openedTodayCount(dateList[i])%></td>
-          <% let closedList = closedTodayCount(dateList[i]); let cl = 0; if
+          <td><%=dateListShow[i]%></td>
+          <td><%=openedTodayCount(dateListShow[i])%></td>
+          <% let closedList = closedTodayCount(dateListShow[i]); let cl = 0; if
           (closedList){ cl = closedList.length;}%>
           <td><%=cl%></td>
           <% let closedListStr = ""; for (let i in closedList) { closedListStr
           += closedList[i] + " "; } %>
           <td><%=getDigits(closedListStr)%></td>
-          <td><%=getTotalOpenWOs(dateList[i])%></td>
+          <td><%=getTotalOpenWOs(dateListShow[i])%></td>
         </tr>
         <%}%>
       </tbody>
