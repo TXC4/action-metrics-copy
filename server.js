@@ -121,6 +121,29 @@ app.post('/', (req, res) => {
         })();
     }
 })
+app.post('/stats', (req, res) => {
+    (async () => {
+        const fetchResponse = await fetch(urlAll);
+        const json = await fetchResponse.json();
+        let jsonCopy = json;
+        if (req.body.minDate) {
+            jsonCopy = { ...jsonCopy, minDate: req.body.minDate };
+        } else {
+            jsonCopy = { ...jsonCopy, minDate: "2021-06-01" };
+        }
+        if (req.body.minShowDate) {
+            jsonCopy = { ...jsonCopy, minShowDate: req.body.minShowDate };
+        } else {
+            jsonCopy = { ...jsonCopy, minShowDate: "2021-06-01" };
+        }
+        if (req.body.maxDate) {
+            jsonCopy = { ...jsonCopy, maxDate: req.body.maxDate };
+        } else {
+            jsonCopy = { ...jsonCopy, maxDate: getDefaultMaxDate() }
+        }
+        res.render('stats', { data: jsonCopy });
+    })();
+})
 
 // app.post('/stats', (req, res) => {
 //     (async () => {
