@@ -33,6 +33,9 @@ app.get('/', (req, res) => {
         jsonCopy = { ...jsonCopy, maxDate: getDefaultMaxDate() }
         
         var showData = metrics.runMetrics(jsonCopy);
+        showData.minDate = "2021-06-01";
+        showData.minShowDate = "2021-06-01";
+        showData.maxDate = getDefaultMaxDate();
 
         res.render('stats', { data: showData });
     })();
@@ -59,6 +62,9 @@ app.post('/stats', (req, res) => {
             jsonCopy = { ...jsonCopy, maxDate: getDefaultMaxDate() }
         }
         var showData = metrics.runMetrics(jsonCopy);
+        showData.minDate = jsonCopy.minDate;
+        showData.minShowDate = jsonCopy.minShowDate;
+        showData.maxDate = jsonCopy.maxDate;
         res.render('stats', { data: showData });
     })();
 })
