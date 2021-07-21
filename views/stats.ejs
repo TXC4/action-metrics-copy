@@ -16,22 +16,7 @@
   </head>
   <body style="padding-top: 70px">
     <% var parsedData = data; %>
-
-    <!--Convert to yyyymmdd-->
-    <% function getYMD(ogDate) { var y = ogDate.getFullYear(); var m =
-    ogDate.getMonth() + 1; var d = ogDate.getDate(); var mm = m < 10 ? "0" + m :
-    m; var dd = d < 10 ? "0" + d : d; return "" + y + "-" + mm + "-" + dd; } %>
-
-    <!--Get index of dates within date range-->
-    <% var inRange = []; var today = new Date(); var minD = getYMD(today); var
-    maxD = getYMD(today); if (parsedData.minDate){ minD = parsedData.minDate; }
-    if (parsedData.maxDate){ maxD = parsedData.maxDate; } for (var i in
-    parsedData.records) { var thisDate = parsedData.records[i][2]; var year =
-    thisDate.slice(6, 10); var month = thisDate.slice(0, 2); var monthInt =
-    parseInt(month, 10); monthInt = monthInt - 1; month = monthInt.toString(10);
-    var day = thisDate.slice(3, 5); var startDate = new Date(year, month, day);
-    var reportDate = getYMD(startDate); if (reportDate >= minD && reportDate <=
-    maxD) { inRange.push(i); } }%>
+    <% console.log(parsedData.minDate, parsedData.minShowDate, parsedData.maxShowDate);%>
 
     <!--Navbar-->
     <nav
@@ -78,64 +63,6 @@
       </div>
     </nav>
 
-    <!--get dates-->
-    <%var formattedMinDate = new Date(parsedData.minDate); var formattedMaxDate
-    = new Date(parsedData.maxDate); var diff = (formattedMaxDate -
-    formattedMinDate)/1000/60/60/24; var dateList = []; dateList.push(
-    formattedMaxDate.toLocaleDateString('en-US', {timeZone: 'UTC'} )); var
-    dayBefore = new Date(formattedMaxDate); for (var i = diff; i > 0; i--) {
-    dayBefore.setDate(dayBefore.getDate() - 1);
-    dateList.push(dayBefore.toLocaleDateString('en-US', {timeZone: 'UTC'})); }
-    %>
-
-    <!--get dates to show-->
-    <%var formattedMinDate = new Date(parsedData.minShowDate); var
-    formattedMaxDate = new Date(parsedData.maxDate); var diff =
-    (formattedMaxDate - formattedMinDate)/1000/60/60/24; var dateListShow = [];
-    dateListShow.push( formattedMaxDate.toLocaleDateString('en-US', {timeZone:
-    'UTC'} )); var dayBefore = new Date(formattedMaxDate); for (var i = diff; i
-    > 0; i--) { dayBefore.setDate(dayBefore.getDate() - 1);
-    dateListShow.push(dayBefore.toLocaleDateString('en-US', {timeZone: 'UTC'}));
-    } %>
-
-    <!--Report date to ymd-->
-    <% function convertReportDateToYMD(inDate){ var tempDateStr =
-    inDate.slice(0,10); tempDateStr = new Date (tempDateStr); return
-    tempDateStr.toLocaleDateString('en-US', {timeZone: 'UTC'}); } %>
-
-    <!--Get # WOs opened by date-->
-    <% function openedTodayCount (inDate){ let count = 0; for (let i in
-    parsedData.records){ let tempDate = new Date
-    (parsedData.records[i][2].slice(0,10)); let recordDate =
-    tempDate.toLocaleDateString('en-US', {timeZone: 'UTC'});
-    console.log('opened:',inDate, recordDate); if (inDate == recordDate){
-    count++; } } return count; }%>
-
-    <!--Get # WOs closed by date-->
-    <!--Only works if console.log is in the function???-->
-    <% function closedTodayCount(inDate){ let closedList = []; let count = 0;
-    for (let i in parsedData.records){ let tempDate = new Date
-    (parsedData.records[i][3]); let recordDate =
-    tempDate.toLocaleDateString('en-US', {timeZone: 'UTC'}); console.log(inDate,
-    recordDate); if (inDate == recordDate){
-    closedList.push(parsedData.records[i][0]); } }return closedList; }%>
-
-    <!--Extract numbers from WO data-->
-    <% function getDigits(woString){ let matches = woString.match(/\d+/g); let
-    returnString = ""; for (let i in matches){ returnString += matches[i]; if (i
-    < (matches.length - 1)){returnString += ", ";} } return returnString; } %>
-
-    <!--Get total open WOs by day-->
-    <% function getTotalOpenWOs(inDate){ let count = 0; let iDate = new
-    Date(inDate); for (let i in parsedData.records){ let oDate = new
-    Date(parsedData.records[i][2].slice(0,10)); let cDate = new
-    Date(parsedData.records[i][3].slice(0,10)); let mnDate = new
-    Date(parsedData.minDate.slice(0,10)); console.log('total open:',oDate,
-    cDate, mnDate); if (oDate <= iDate && oDate >= mnDate){ if
-    (!parsedData.records[i][3] || (parsedData.records[i][3] == "") || (cDate >
-    iDate)){ count++; console.log('count increased', parsedData.records[i][0])}
-    } } return count;}%>
-
     <table class="table table-striped table-dark">
       <thead>
         <tr>
@@ -148,17 +75,13 @@
       </thead>
 
       <tbody>
-        <%for (var i in dateListShow){ %>
+        <%for (var val of parsedData){ %>
         <tr>
-          <td><%=dateListShow[i]%></td>
-          <td><%=openedTodayCount(dateListShow[i])%></td>
-          <% let closedList = closedTodayCount(dateListShow[i]); let cl = 0; if
-          (closedList){ cl = closedList.length;}%>
-          <td><%=cl%></td>
-          <% let closedListStr = ""; for (let i in closedList) { closedListStr
-          += closedList[i] + " "; } %>
-          <td><%=getDigits(closedListStr)%></td>
-          <td><%=getTotalOpenWOs(dateListShow[i])%></td>
+          <td><%=val.date.slice(0,10)%></td>
+          <td><%=val.openedCount%></td>
+          <td><%=val.closedCount%></td>
+          <td><%=val.closedList%></td>
+          <td><%=val.currentlyOpenCount%></td>
         </tr>
         <%}%>
       </tbody>
