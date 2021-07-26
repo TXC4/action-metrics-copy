@@ -1,9 +1,6 @@
 module.exports = {
     runMetrics : (json) => {
 
-        //var startCountDate = new Date('6/1/2021');
-        //var startShowingDate = new Date('6/1/2021');
-        //var endCountDate = new Date();
         var startCountDate = new Date(json.minDate);
         var startShowingDate = new Date(json.minShowDate);
         var endCountDate = new Date(json.maxDate);
@@ -12,13 +9,14 @@ module.exports = {
 
         const millPerDay = 1000 * 60 * 60 * 24;
 
+        //function for adding days to a date object
         Date.prototype.addDays = function(days) {
             var date = new Date(this.valueOf());
             date.setDate(date.getDate() + days);
             return date;
         }
 
-        //get number of days between 2 days
+        //get number of days between 2 dates
         function getDateDiff(startDate, stopDate){
             var timeDiff = stopDate.getTime() - startDate.getTime();
             var dayDiff = timeDiff / millPerDay;
@@ -67,6 +65,7 @@ module.exports = {
             returnDataList.push({date: val, openedCount: 0, closedCount: 0, currentlyOpenCount: 0, closedList: [] });
         }
 
+        //calculate useful stats
         var runningTotal = 0;
         for (var i in returnDataList){
             var opened = objList.filter(o => o.openDate.toISOString().slice(0,10) == returnDataList[i].date.slice(0,10));
@@ -80,6 +79,7 @@ module.exports = {
             returnDataList[i].currentlyOpenCount = runningTotal;
 
         }
+        //Filter and return the useful data based on user parameters
         var showData = returnDataList.filter(o => (new Date(o.date)) >= startShowingDate);
         return showData;
     }

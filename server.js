@@ -7,8 +7,10 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Insert API URL
 urlAll = "";
 
+// Get today's date as Max Date
 function getDefaultMaxDate() {
     var now = new Date();
     var y = now.getFullYear();
@@ -19,6 +21,7 @@ function getDefaultMaxDate() {
     return "" + y + "-" + mm + "-" + dd;
 }
 
+// Get initial stats page with default data
 app.get('/', (req, res) => {
     (async () => {
         const fetchResponse = await fetch(urlAll);
@@ -38,6 +41,7 @@ app.get('/', (req, res) => {
     })();
 });
 
+// Get stats page with custom data on 'Go' button
 app.post('/stats', (req, res) => {
     (async () => {
         const fetchResponse = await fetch(urlAll);
@@ -66,6 +70,7 @@ app.post('/stats', (req, res) => {
     })();
 })
 
+// Listen on port hosted else 3000
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server started");
 })

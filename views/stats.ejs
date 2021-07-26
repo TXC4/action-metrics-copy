@@ -16,7 +16,6 @@
   </head>
   <body style="padding-top: 70px">
     <% var parsedData = data; %>
-    <% console.log(parsedData.minDate, parsedData.minShowDate, parsedData.maxShowDate);%>
 
     <!--Navbar-->
     <nav
@@ -36,6 +35,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
         <div class="navbar-nav ml-auto">
+          <!--user form for date filtering-->
           <form action="/stats" method="post">
             <span style="color: white">Count Start: </span>
             <input
