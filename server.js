@@ -7,10 +7,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 
-urlOpen = "https://app.propertyware.com/pw/00a/2458353664/JSON?3PHJqRj";
-urlClosed = "https://app.propertyware.com/pw/00a/2458353665/JSON?8TKZQMr";
-urlUnassigned = "https://app.propertyware.com/pw/00a/2458353668/JSON?9EyeuDT";
-urlAll = "https://app.propertyware.com/pw/00a/2469658624/JSON?9ZjKRYo";
+urlAll = "";
 
 function getDefaultMaxDate() {
     var now = new Date();
